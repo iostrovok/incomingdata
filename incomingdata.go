@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	cf "github.com/iostrovok/go-convert"
-	"github.com/pkg/errors"
 )
 
 type Result struct {
@@ -68,7 +67,7 @@ func (i *Incoming) Add(key string, value any, typ Type) *Incoming {
 }
 
 func errorf(key string, value any, typ Type, err error) error {
-	return errors.Errorf("wrong parameter. Expected: %s. %s => %+v. Convert error: %+v", nameOfType(typ), key, value, err)
+	return fmt.Errorf("wrong parameter. Expected: %s. %s => %+v. Convert error: %+v", nameOfType(typ), key, value, err)
 }
 
 func checkAndLogIncomingData(key string, value any, typ Type) error {
@@ -80,7 +79,7 @@ func checkAndLogIncomingData(key string, value any, typ Type) error {
 		}
 
 		if (typ == Int32N && a < 0) || (typ == Int32P && a <= 0) {
-			return errors.Errorf("%s %d", nameOfType(typ), a)
+			return fmt.Errorf("%s %d", nameOfType(typ), a)
 		}
 	case ListInt32N, ListInt32P:
 		s, err := cf.ListOfInt32Err(value, true)
@@ -89,7 +88,7 @@ func checkAndLogIncomingData(key string, value any, typ Type) error {
 		}
 		for _, s := range s {
 			if s < 0 || (s == 0 && typ == ListInt32P) {
-				return errors.Errorf("%s %d", nameOfType(typ), s)
+				return fmt.Errorf("%s %d", nameOfType(typ), s)
 			}
 		}
 	case Int64, Int64N, Int64P:
@@ -99,7 +98,7 @@ func checkAndLogIncomingData(key string, value any, typ Type) error {
 		}
 
 		if (typ == Int64N && a < 0) || (typ == Int64P && a <= 0) {
-			return errors.Errorf("%s %d", nameOfType(typ), a)
+			return fmt.Errorf("%s %d", nameOfType(typ), a)
 		}
 	case Float32, Float32N, Float32P:
 		a, err := cf.Float32Err(value)
@@ -124,7 +123,7 @@ func checkAndLogIncomingData(key string, value any, typ Type) error {
 	case StringP:
 		a := cf.String(value)
 		if typ == StringP && len(a) == 0 {
-			return errorf(key, value, typ, errors.Errorf("empty string"))
+			return errorf(key, value, typ, fmt.Errorf("empty string"))
 		}
 	case ListStringP:
 		if _, err := cf.ListOfStringsPErr(value, true); err != nil {

@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"math"
 	"testing"
-
-	"github.com/pkg/errors"
 )
 
 func TestInt32(t *testing.T) {
@@ -341,7 +339,7 @@ func Fatal(t *testing.T, err error) {
 
 func NotNil(t *testing.T, err error) {
 	if err == nil {
-		Fatal(t, errors.Errorf("expected not nil errors"))
+		Fatal(t, fmt.Errorf("expected not nil errors"))
 	}
 }
 
